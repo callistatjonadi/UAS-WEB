@@ -6,12 +6,13 @@ if(isset($_POST['submit'])){
   $email = $_POST['email'];
   $password = $_POST['password'];
 
-  $sql = "SELECT profile FROM student WHERE email = '$email' AND password = '$password'";
+  $sql = "SELECT profile, role FROM student WHERE email = '$email' AND password = '$password'";
   $stmt = $conn->prepare($sql);
   $stmt->execute();
   $result = $stmt->get_result();
   $row_user = $result->fetch_assoc();
   $profile = $row_user['profile'];
+  $role = $row_user['role'];
 
   if($profile == "") {
     $sql = "UPDATE student SET profile = 'profile.png' WHERE email = '$email' AND password = '$password'";
@@ -31,7 +32,15 @@ if(isset($_POST['submit'])){
     $_SESSION['username'] = $row_user['username'];
     $_SESSION['nama'] = $row_user['nama'];
     $_SESSION['profile'] = $row_user['profile'];
-    header("location: home.php");
+    $_SESSION['password'] = $row_user['password'];
+
+    if ($role == "student"){
+      header("location: home.php");
+    } elseif ($role == "admin"){
+      header("location: admin.php");
+    }
+
+    exit();
   } else {
     $error_message = "Email/password yang anda masukkan salah. Silahkan masukkan email/password dengan benar.";
     echo "<script>alert('$error_message');</script>";

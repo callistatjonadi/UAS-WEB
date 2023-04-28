@@ -81,15 +81,17 @@ if(mysqli_num_rows($result) > 0){
             <a class="nav-link margin4" style="margin-left: -40px; margin-right: 30px;" href="#">Topik</a>
             <span class = "hover2-text">
             <div class="list-group">
-              <a href="topik.php?get_kategori=Akademis" class="list-group-item list-group-item-action">Akademis</a>
-              <a href="topik.php?get_kategori=Akuntansi" class="list-group-item list-group-item-action">Akuntansi</a>
-              <a href="topik.php?get_kategori=Bisnis" class="list-group-item list-group-item-action">Bisnis</a>
-              <a href="topik.php?get_kategori=Desain" class="list-group-item list-group-item-action">Desain</a>
-              <a href="topik.php?get_kategori=Komputer" class="list-group-item list-group-item-action">Komputer</a>
-              <a href="topik.php?get_kategori=Marketing" class="list-group-item list-group-item-action">Marketing</a>
-              <a href="topik.php?get_kategori=Musik" class="list-group-item list-group-item-action">Musik</a>
-              <a href="topik.php?get_kategori=Sains" class="list-group-item list-group-item-action">Sains</a>
-              <a href="topik.php?get_kategori=Videografi" class="list-group-item list-group-item-action">Videografi</a>
+            <?php
+              $sql_kategori = "SELECT * FROM topik ORDER BY nama_topik ASC";
+              $result_kategori = $conn->query($sql_kategori);
+              while ($row_kategori = $result_kategori->fetch_assoc()) {
+                $kategori_id = $row_kategori['id'];
+                $nama_kategori = $row_kategori['nama_topik'];
+                ?>
+                <a href="topik.php?get_kategori=<?php echo $kategori_id; ?>" class="list-group-item list-group-item-action"><?php echo $nama_kategori; ?></a>
+                <?php
+              }
+              ?>
             </div>
             </span>
           </div>
@@ -221,6 +223,14 @@ if(mysqli_num_rows($result) > 0){
             <i class="bi bi-person-circle" style="margin-right:15px;"></i>
             <span data-feather="file" class="align-text-bottom textkecil1" style="color:white;"></span>
               Profile Picture
+            </a>
+          </li>
+          <hr class="hr1">
+          <li class="nav-item kiri2">
+            <a class="nav-link b" href="ubah_pass.php">
+            <i class="bi bi-key" style="margin-right:15px;"></i>
+            <span data-feather="file" class="align-text-bottom textkecil1" style="color:white;"></span>
+              Ganti Password
             </a>
           </li>
           <hr class="hr1">

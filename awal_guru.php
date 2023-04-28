@@ -73,14 +73,14 @@
       margin-right: 110px;
       float: left
     }
-    .container{
+    /* .container{
       height: 100px;
       background: black;
-      /* border: 1px solid black; */
+
       margin: auto;
       margin-top: 50px;
       padding: 5px
-    }
+    } */
     #wrapper{
         display: block;
         align-items: center;
@@ -155,15 +155,17 @@
             <a class="nav-link margin4" style="margin-left: -40px; margin-right: 30px;" href="#">Topik</a>
             <span class = "hover2-text">
             <div class="list-group">
-              <a href="topik.php?get_kategori=Akademis" class="list-group-item list-group-item-action">Akademis</a>
-              <a href="topik.php?get_kategori=Akuntansi" class="list-group-item list-group-item-action">Akuntansi</a>
-              <a href="topik.php?get_kategori=Bisnis" class="list-group-item list-group-item-action">Bisnis</a>
-              <a href="topik.php?get_kategori=Desain" class="list-group-item list-group-item-action">Desain</a>
-              <a href="topik.php?get_kategori=Komputer" class="list-group-item list-group-item-action">Komputer</a>
-              <a href="topik.php?get_kategori=Marketing" class="list-group-item list-group-item-action">Marketing</a>
-              <a href="topik.php?get_kategori=Musik" class="list-group-item list-group-item-action">Musik</a>
-              <a href="topik.php?get_kategori=Sains" class="list-group-item list-group-item-action">Sains</a>
-              <a href="topik.php?get_kategori=Videografi" class="list-group-item list-group-item-action">Videografi</a>
+            <?php
+              $sql_kategori = "SELECT * FROM topik ORDER BY nama_topik ASC";
+              $result_kategori = $conn->query($sql_kategori);
+              while ($row_kategori = $result_kategori->fetch_assoc()) {
+                $kategori_id = $row_kategori['id'];
+                $nama_kategori = $row_kategori['nama_topik'];
+                ?>
+                <a href="topik.php?get_kategori=<?php echo $kategori_id; ?>" class="list-group-item list-group-item-action"><?php echo $nama_kategori; ?></a>
+                <?php
+              }
+              ?>
             </div>
             </span>
           </div>
@@ -413,6 +415,59 @@
                 </div>
             </div>
         </div> 
+    </div>
+
+    <hr style="margin-top:-250px">
+    <div class="d-flex justify-content-center">
+      <div class="card" style="width: 40rem; margin-top: 25px">
+        <img src="gambar/mulai_kursus.jpg" class="card-img-top" alt="..." style="height: 300px;">
+        <div class="card-body">
+          <h5 class="card-title">Siap untuk mulai mengajar?</h5>
+          <a href="form_kursus.php" class="btn btn-primary">Buat Kursus</a>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <hr style="margin-bottom:-10px">
+
+    <div class="container">
+      <div class="row m-5" >
+        <?php 
+        $nama = $_SESSION['nama'];
+        ?>
+        <h4 style="margin-left:-100px; margin-bottom:-20px;">Halo, <?php echo $nama; ?>! Lihat Video Yang Telah Kamu Upload</h4>
+      </div>
+
+      <div class="row">
+        <?php
+        $user_id = $_SESSION['user_id'];
+        $sql = "SELECT * FROM video WHERE user_id = '$user_id' ORDER BY created_date ASC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if(mysqli_num_rows($result) > 0){
+          while($row_guru = $result->fetch_assoc()){
+            $thumbnail = $row_guru['thumbnail'];
+            $judul = $row_guru['judul'];
+            $deskripsi = $row_guru['deskripsi'];
+        ?>
+        <div class="card col-md-4" style="margin-right:40px; margin-bottom:20px; width:18rem;">
+          <img src="media/<?=$thumbnail; ?>" class="card-img-top" alt="..." height="200px" style="margin-top: 12px;">
+          <div class="card-body">
+            <h5 class="card-title"><?=$judul; ?></h5>
+            <p class="card-text"><?=$deskripsi; ?></p>
+          </div>
+        </div>
+        <?php }
+        }else{ ?>
+        <div style="text-align: center;">
+          <img src="gambar/kursus_kosong.jpg" height="500px" width="500px" style="margin: 0 auto;">
+          <h3>Belum ada video yang di-upload</h3>
+        </div>
+        <?php }?>
+      </div>
     </div>
 
 

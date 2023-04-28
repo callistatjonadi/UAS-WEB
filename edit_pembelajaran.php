@@ -81,4 +81,28 @@ if (isset($_POST['id_video_hapuswishlist'])){
     $stmt->bind_param("dd", $user_id, $video_id);
     $stmt->execute();
 }
+
+if (isset($_POST['id_video_terima'])){
+    $video_id = $_POST['id_video_terima'];
+    $status = "terima";
+
+    $sql = "UPDATE video SET status = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sd", $status, $video_id);
+    
+    $stmt->execute();
+    echo "success";
+}
+
+if (isset($_POST['id_video_tolak'])){
+    $video_id = $_POST['id_video_tolak'];
+    $status = "tolak";
+
+    $sql = "UPDATE video SET status = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sd", $status, $video_id);
+    
+    $stmt->execute();
+    echo "success";
+}
 ?>

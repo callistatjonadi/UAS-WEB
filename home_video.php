@@ -21,21 +21,21 @@ if(isset($_SESSION['profile'])){
     <title>Home</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      $(document).ready(function(){
-        $("#tambah_list-btn").click(function(){
-          var id_video = "<?php echo $_GET['get_id_video']; ?>";
-          $.post("edit_pembelajaran.php", 
-          {
-            id_video_listsaya: id_video
-          },
-          function(data, status){
-            if (data == "sudah_ada") {
-              alert("Video sudah ada di List Saya.");
-            } else {
-              alert("Video berhasil ditambahkan ke List Saya.");
-            }
-          });
+    $(document).ready(function(){
+      $("#tambah_list-btn").click(function(){
+        var id_video = "<?php echo $_GET['get_id_video']; ?>";
+        $.post("edit_pembelajaran.php", 
+        {
+          id_video_listsaya: id_video
+        },
+        function(data, status){
+          if (data == "sudah_ada") {
+            showModal("Video sudah ada di List Saya.");
+          } else {
+            showModal("Video berhasil ditambahkan ke List Saya.");
+          }
         });
+      });
 
       $("#tambah_wishlist-btn").click(function(){
         var id_video = "<?php echo $_GET['get_id_video']; ?>";
@@ -45,16 +45,19 @@ if(isset($_SESSION['profile'])){
         },
         function(data, status){
           if (data == "sudah_ada") {
-            alert("Video sudah ada di Wishlist Saya.");
+            showModal("Video sudah ada di Wishlist Saya.");
           } else {
-            alert("Video berhasil ditambahkan ke Wishlist Saya.");
+            showModal("Video berhasil ditambahkan ke Wishlist Saya.");
           }
         });
-        });
       });
-      
 
-    </script>
+      function showModal(message) {
+        $("#modal-message").text(message);
+        $("#myModal").modal("show");
+      }
+    });
+  </script>
     <style>
         body{
             background: #D3D3D3;
@@ -95,15 +98,17 @@ if(isset($_SESSION['profile'])){
             <a class="nav-link margin4" style="margin-left: -40px; margin-right: 30px;" href="#">Topik</a>
             <span class = "hover2-text">
             <div class="list-group">
-              <a href="topik.php?get_kategori=Akademis" class="list-group-item list-group-item-action">Akademis</a>
-              <a href="topik.php?get_kategori=Akuntansi" class="list-group-item list-group-item-action">Akuntansi</a>
-              <a href="topik.php?get_kategori=Bisnis" class="list-group-item list-group-item-action">Bisnis</a>
-              <a href="topik.php?get_kategori=Desain" class="list-group-item list-group-item-action">Desain</a>
-              <a href="topik.php?get_kategori=Komputer" class="list-group-item list-group-item-action">Komputer</a>
-              <a href="topik.php?get_kategori=Marketing" class="list-group-item list-group-item-action">Marketing</a>
-              <a href="topik.php?get_kategori=Musik" class="list-group-item list-group-item-action">Musik</a>
-              <a href="topik.php?get_kategori=Sains" class="list-group-item list-group-item-action">Sains</a>
-              <a href="topik.php?get_kategori=Videografi" class="list-group-item list-group-item-action">Videografi</a>
+            <?php
+              $sql_kategori = "SELECT * FROM topik ORDER BY nama_topik ASC";
+              $result_kategori = $conn->query($sql_kategori);
+              while ($row_kategori = $result_kategori->fetch_assoc()) {
+                $kategori_id = $row_kategori['id'];
+                $nama_kategori = $row_kategori['nama_topik'];
+                ?>
+                <a href="topik.php?get_kategori=<?php echo $kategori_id; ?>" class="list-group-item list-group-item-action"><?php echo $nama_kategori; ?></a>
+                <?php
+              }
+              ?>
             </div>
             </span>
           </div>
@@ -264,6 +269,24 @@ if(isset($_SESSION['profile'])){
       }
       ?>
       </div>
+
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Pemberitahuan</h4>
+            
+        </div>
+        <div class="modal-body">
+          <p id="modal-message"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
     </div>
     <!-- <script>
     var videoPlayer = document.getElementById("video-player");

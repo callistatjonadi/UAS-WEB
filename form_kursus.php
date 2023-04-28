@@ -80,15 +80,17 @@
             <a class="nav-link margin4" style="margin-left: -40px; margin-right: 30px;" href="#">Topik</a>
             <span class = "hover2-text">
             <div class="list-group">
-              <a href="topik.php?get_kategori=Akademis" class="list-group-item list-group-item-action">Akademis</a>
-              <a href="topik.php?get_kategori=Akuntansi" class="list-group-item list-group-item-action">Akuntansi</a>
-              <a href="topik.php?get_kategori=Bisnis" class="list-group-item list-group-item-action">Bisnis</a>
-              <a href="topik.php?get_kategori=Desain" class="list-group-item list-group-item-action">Desain</a>
-              <a href="topik.php?get_kategori=Komputer" class="list-group-item list-group-item-action">Komputer</a>
-              <a href="topik.php?get_kategori=Marketing" class="list-group-item list-group-item-action">Marketing</a>
-              <a href="topik.php?get_kategori=Musik" class="list-group-item list-group-item-action">Musik</a>
-              <a href="topik.php?get_kategori=Sains" class="list-group-item list-group-item-action">Sains</a>
-              <a href="topik.php?get_kategori=Videografi" class="list-group-item list-group-item-action">Videografi</a>
+            <?php
+              $sql_kategori = "SELECT * FROM topik ORDER BY nama_topik ASC";
+              $result_kategori = $conn->query($sql_kategori);
+              while ($row_kategori = $result_kategori->fetch_assoc()) {
+                $kategori_id = $row_kategori['id'];
+                $nama_kategori = $row_kategori['nama_topik'];
+                ?>
+                <a href="topik.php?get_kategori=<?php echo $kategori_id; ?>" class="list-group-item list-group-item-action"><?php echo $nama_kategori; ?></a>
+                <?php
+              }
+              ?>
             </div>
             </span>
           </div>
@@ -219,14 +221,15 @@
           $judul = $_POST['judul'];
           $kategori = $_POST['kategori'];
           $deskripsi = $_POST['deskripsi'];
+          $status = "pending";
 
           move_uploaded_file($_FILES['video']['tmp_name'], $video_path); //video di temporary store ke videopath
           move_uploaded_file($_FILES['thumbnail']['tmp_name'], $thumbnail_path); //untuk upload ke folder media/
 
 
-          $sql = "INSERT INTO video (user_id, judul, deskripsi, kategori, thumbnail, video) VALUES (?,?,?,?,?,?)";
+          $sql = "INSERT INTO video (user_id, judul, deskripsi, kategori, thumbnail, video, status) VALUES (?,?,?,?,?,?,?)";
           $stmt = $conn->prepare($sql);
-          $stmt->bind_param("dsssss", $user_id, $judul, $deskripsi, $kategori, $thumbnail_name, $video_name);
+          $stmt->bind_param("dssssss", $user_id, $judul, $deskripsi, $kategori, $thumbnail_name, $video_name, $status);
               
           if ($stmt->execute()){
             echo '<div class="alert alert-success">File berhasil diupload.</div>';
@@ -248,6 +251,10 @@
             <span class="input-group-text" id="basic-addon1">Judul Video</span>
             <input type="text" class="form-control" placeholder="Ketikkan Judul Video Anda" name="judul" required>
           </div>
+          <?php
+            $sql = "SELECT * FROM topik";
+            $result = $conn->query($sql);
+          ?>
           <div class="mb-3">
             <span class="input-group-text" id="basic-addon1">Deskripsi Video</span>
             <input type="text" class="form-control" placeholder="Ketikkan Deskripsi Video Anda" name="deskripsi" required>
@@ -255,16 +262,14 @@
           <div class="mb-3">
           <label class="input-group-text" for="inputGroupSelect01">Options</label>
           <select class="form-select" id="inputGroupSelect01" name="kategori" required>
-            <option selected>Pilih Kategori</option>
-            <option value="Akademis">Akademis</option>
-            <option value="Akuntansi">Akuntansi</option>
-            <option value="Bisnis">Bisnis</option>
-            <option value="Desain">Desain</option>
-            <option value="Komputer">Komputer</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Musik">Musik</option>
-            <option value="Sains">Sains</option>
-            <option value="Videografi">Videografi</option>
+            <option selected>Pilih Topik</option>
+            <?php
+              while ($row = $result->fetch_assoc()) {
+                $kategori_id = $row['id'];
+                $nama_kategori = $row['nama_topik'];
+                echo "<option value='$kategori_id'>$nama_kategori</option>";
+              }
+              ?>
           </select>
 
       </div>

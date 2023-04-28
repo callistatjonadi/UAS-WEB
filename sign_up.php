@@ -6,10 +6,11 @@ if(isset($_POST['submit']) && isset($_POST['nama']) != "" && isset($_POST['usern
   $username = $_POST['username'];
   $email = $_POST['email'];
   $password = $_POST['password'];
+  $role = "student";
   
-  $sql = "INSERT INTO student (nama, username, email, password) VALUES (?,?,?,?)";
+  $sql = "INSERT INTO student (nama, username, email, password, role) VALUES (?,?,?,?,?)";
   $stmt = $conn->prepare($sql);
-  $stmt->bind_param("ssss", $nama, $username, $email, $password);
+  $stmt->bind_param("sssss", $nama, $username, $email, $password, $role);
 
 
   if ($stmt->execute()){
@@ -37,6 +38,7 @@ if(isset($_POST['submit']) && isset($_POST['nama']) != "" && isset($_POST['usern
     $_SESSION['username'] = $row_user['username'];
     $_SESSION['nama'] = $row_user['nama'];
     $_SESSION['profile'] = $row_user['profile'];
+    $_SESSION['password'] = $row_user['password'];
     header('location: home.php');
   } else {
     die("Data yang anda masukkan tidak valid");

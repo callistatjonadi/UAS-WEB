@@ -252,7 +252,7 @@
             <input type="text" class="form-control" placeholder="Ketikkan Judul Video Anda" name="judul" required>
           </div>
           <?php
-            $sql = "SELECT * FROM topik";
+            $sql = "SELECT * FROM topik ORDER BY nama_topik ASC";
             $result = $conn->query($sql);
           ?>
           <div class="mb-3">

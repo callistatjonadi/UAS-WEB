@@ -285,7 +285,7 @@
         $username = $_SESSION['username'];
         $email = $_SESSION['email'];
         ?>
-        <div class="col1"><img class="profil2" src="gambar/profile.png"></div>
+        <div class="col1"><img class="profil2" src="media/<?php echo $profile; ?>"></div>
         <div class="col1" style="margin-left: -170px; padding-top: 3px;"><b><?php echo $username; ?></b> 
           <br/>
           <div style="font-size:13px"><?php echo $email; ?></div><br/>
@@ -311,7 +311,7 @@
         <h5 class="card-title ukurantulisan" >Ayo bagikan ilmu anda <br> bersama kami</h5>
         <p class="card-text ukurantulisan2">Pendidikan bukanlah persiapan untuk hidup, <br> pendidikan adalah kehidupan itu sendiri</p>  
         <?php if (is_logged_in()){?>
-        <p class="card-text ukurantulisan3" style="margin-top: 20px"><a href="home_guru.php"><button type="button" class="btn btn-primary btn-lg">Mulai Mengajar</button></a></p>
+        <p class="card-text ukurantulisan3" style="margin-top: 20px"><a href="form_kursus.php"><button type="button" class="btn btn-primary btn-lg">Mulai Mengajar</button></a></p>
         <?php }?>  
         <?php if (!is_logged_in()){?>
         <p class="card-text ukurantulisan3" style="margin-top: 20px"><a href="login.php"><button type="button" class="btn btn-primary btn-lg">Mulai Mengajar</button></a></p>
@@ -417,7 +417,7 @@
         </div> 
     </div>
 
-    <hr style="margin-top:-250px">
+    <!-- <hr style="margin-top:-250px">
     <div class="d-flex justify-content-center">
       <div class="card" style="width: 40rem; margin-top: 25px">
         <img src="gambar/mulai_kursus.jpg" class="card-img-top" alt="..." style="height: 300px;">
@@ -426,10 +426,10 @@
           <a href="form_kursus.php" class="btn btn-primary">Buat Kursus</a>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <br>
-    <hr style="margin-bottom:-10px">
+
+    <hr style="margin-bottom:-10px; margin-top: -200px;">
 
     <div class="container">
       <div class="row m-5" >
@@ -446,7 +446,7 @@
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
-
+        
         if(mysqli_num_rows($result) > 0){
           while($row_guru = $result->fetch_assoc()){
             $thumbnail = $row_guru['thumbnail'];
@@ -457,7 +457,16 @@
           <img src="media/<?=$thumbnail; ?>" class="card-img-top" alt="..." height="200px" style="margin-top: 12px;">
           <div class="card-body">
             <h5 class="card-title"><?=$judul; ?></h5>
-            <p class="card-text"><?=$deskripsi; ?></p>
+            <p class="card-text" style="height: 40px;"><?=$deskripsi; ?></p>
+            <p>
+              <?php if ($row_guru['status'] == 'terima'){ ?>
+              <i class="icon bi bi-check-lg text-success ms-auto align-self-center d-block" style="margin-top: 10px; margin-bottom: -15px; font-size: 20px;"> Diterima</i> 
+              <?php } elseif ($row_guru['status'] == 'pending'){ ?>
+              <i class="icon bi bi-clock text-warning ms-auto align-self-center d-block" style="margin-top: 10px; margin-bottom: -15px; font-size: 20px;">  Pending</i> 
+              <?php } elseif ($row_guru['status'] == 'tolak'){ ?>
+              <i class="icon bi bi-x-lg text-danger ms-auto align-self-center d-block" style="margin-top: 10px; margin-bottom: -15px; font-size: 20px;">  Ditolak</i> 
+              <?php } ?>
+              </p>
           </div>
         </div>
         <?php }

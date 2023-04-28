@@ -212,7 +212,7 @@ if(isset($_SESSION['profile'])){
     <h3 style="margin-top:30px">Video pembelajaran yang berkaitan dengan topik <?php echo $nama_kategori; ?></h3>
   <?php 
 
-      $sql = "SELECT * FROM video WHERE kategori = '$id_kategori' ORDER BY created_date ASC";
+      $sql = "SELECT * FROM video WHERE kategori = '$id_kategori' AND status = 'terima' ORDER BY created_date ASC";
       $stmt = $conn->prepare($sql);
       $stmt->execute();
       $result = $stmt->get_result();

@@ -1,37 +1,6 @@
 <?php
 require "config.php";
 
-
-if (isset($_POST['save'])) {
-  $topik = $_POST['topik'];
-  $sql_check = "SELECT * FROM topik WHERE nama_topik = ?";
-  $stmt_check = $conn->prepare($sql_check);
-  $stmt_check->bind_param("s", $topik);
-  $stmt_check->execute();
-  $result_check = $stmt_check->get_result();
-
-  if (mysqli_num_rows($result_check) > 0) {
-      $response = array('message' => 'Kategori sudah pernah ada.');
-  } else {
-      $sql = "INSERT INTO topik (nama_topik) VALUES (?)";
-      $stmt = $conn->prepare($sql);
-      $stmt->bind_param("s", $topik);
-      $stmt->execute();
-      $response = array('message' => 'Kategori berhasil ditambahkan.');
-
-      $sql = "SELECT * FROM topik ORDER BY nama_topik ASC";
-      $result = $conn->query($sql);
-      $categoryList = array();
-      while ($row = $result->fetch_assoc()) {
-        $categoryList[] = $row;
-      }
-      $response['categoryList'] = $categoryList;
-  }
-
-  echo json_encode($response);
-  exit;
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -53,53 +22,6 @@ if (isset($_POST['save'])) {
     <title>Admin</title>
     <link href="../bootstrap\css\bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      $(document).ready(function() {
-          $('#addCategoryForm').submit(function(event) {
-              event.preventDefault();
-              var category = $('#categoryInput').val();
-
-              $.ajax({
-                  url: 'tambah_topik.php',
-                  type: 'POST',
-                  data: {
-                      save: true,
-                      topik: category
-                  },
-                  dataType: 'json',
-                  success: function(response) {
-                      if (response.message === 'Kategori berhasil ditambahkan.') {
-                          var categoryList = response.categoryList;
-                          $('#categoryInput').val('');
-                          categoryList.sort(function(a, b) {
-                              var nama_topikA = a.nama_topik.toUpperCase();
-                              var nama_topikB = b.nama_topik.toUpperCase();
-                              if (nama_topikA < nama_topikB) {
-                                  return -1;
-                              }
-                              if (nama_topikA > nama_topikB) {
-                                  return 1;
-                              }
-                              return 0;
-                          });
-                          var categoryTableBody = $('#categoryTableBody');
-                          categoryTableBody.empty();
-                          $.each(categoryList, function(index, category) {
-                              categoryTableBody.append('<tr><td>' + category.nama_topik + '</td></tr>');
-                          });
-                          alert(response.message);
-                      } else {
-                          alert(response.message);
-                      }
-                  },
-                  error: function(xhr, status, error) {
-                      console.log(xhr.responseText);
-                  }
-              });
-          });
-      });
-
-    </script>
 
     <style>
       .bd-placeholder-img {
@@ -204,13 +126,13 @@ if (isset($_POST['save'])) {
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link  active" href="tambah_topik.php">
+            <a class="nav-link " href="tambah_topik.php">
               <span data-feather="file" class="align-text-bottom"></span>
               Tambah Topik
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="pengguna.php">
+            <a class="nav-link active" href="pengguna.php">
               <span data-feather="file" class="align-text-bottom"></span>
               Pengguna Studee
             </a>
@@ -221,34 +143,26 @@ if (isset($_POST['save'])) {
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Tambah Topik</h1>
+        <h1 class="h2">Pengguna Studee</h1>
       </div>
 
-      <h5>Topik Yang Sudah Ada</h5>
+      <h5>Daftar Pengguna Studee</h5>
       
       <div class="table-responsive">
         <table class="table table-striped table-sm">
             <tbody id="categoryTableBody">
                 <?php
-                  $sql = "SELECT * FROM topik ORDER BY nama_topik ASC";
+                  $sql = "SELECT * FROM student WHERE role = 'student' ORDER BY nama ASC";
                   $result = $conn->query($sql);
                   while ($row = $result->fetch_assoc()) {
-                    $nama_topik = $row['nama_topik'];
-                    echo "<tr><td>$nama_topik</td></tr>";
+                    $nama_user = $row['nama'];
+                    echo "<tr><td>$nama_user</td></tr>";
                   }
                 ?>
             </tbody>
         </table>
     </div>
 
-    <h5 style="margin-top:20px;">Tambah Topik</h5>
-    <form method="POST" enctype="multipart/form-data" id="addCategoryForm">
-        <div style="margin-left:0px; margin-top:10px; width:70%">
-            <input class="form-control" type="text" placeholder="nama topik" name="topik" id="categoryInput">
-        </div>  
-        <div>
-            <button class="button5" style=" margin-top:40px;" name="save" id="saveCategoryButton">Save</button>
-        </div>
-    </form>
+
 </body>
 </html>
